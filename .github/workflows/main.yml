@@ -2,13 +2,15 @@ name: CI
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version to create'     
+        description: "Release version to create"
         required: true
+
+permissions: {}
 
 jobs:
   build_and_test:
@@ -16,7 +18,7 @@ jobs:
     name: Build
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: Build sizoscope (CI)
         if: ${{ github.event.inputs.version == '' }}
         run: |
@@ -71,8 +73,3 @@ jobs:
         with:
           name: sizoscope-cli.${{ github.event.inputs.version }}.nupkg
           path: sizoscope-cli/nupkg/sizoscope-cli.${{ github.event.inputs.version }}.nupkg
-      - name: Create tag
-        if: ${{ github.event.inputs.version != '' && github.actor == 'MichalStrehovsky' }}
-        run: |
-          git tag v${{ github.event.inputs.version }}
-          git push origin v${{ github.event.inputs.version }}
